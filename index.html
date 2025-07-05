@@ -3,19 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quiz Bot</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .question { font-weight: bold; margin-bottom: 10px; }
-    .option { margin: 5px 0; padding: 8px; border: 1px solid #ccc; cursor: pointer; }
-    .correct { background: #4caf50; color: white; }
-    .wrong { background: #f44336; color: white; }
-    .quit { margin-top: 20px; color: red; cursor: pointer; }
-  </style>
+  <title>PDF Quiz Bot</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>MCQ Quiz Bot</h1>
-  <div id="quiz"></div>
+  <div class="upload-section" id="uploadSection">
+    <h2>Please Submit Your PDF</h2>
+    <input type="file" id="pdfInput" accept="application/pdf" />
+    <button onclick="handlePDF()">Upload</button>
+    <div id="loading" style="display:none;">Processing PDF...</div>
+  </div>
+
+  <div class="quiz-section" id="quizSection" style="display:none;">
+    <div id="questionBox"></div>
+    <div id="optionsBox"></div>
+    <button onclick="nextQuestion()">Next</button>
+    <button onclick="quitQuiz()">Quit</button>
+  </div>
+
+  <div class="result-section" id="resultSection" style="display:none;">
+    <h2>Quiz Completed</h2>
+    <div id="scoreBox"></div>
+    <p>Please give me another sheet 🙏</p>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
