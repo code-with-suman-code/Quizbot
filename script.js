@@ -1,39 +1,74 @@
-const quiz = [
-  { q: "What is the capital of India?", o: ["Mumbai", "Delhi", "Kolkata", "Chennai"], a: "Delhi" },
-  { q: "Which planet is known as Red Planet?", o: ["Earth", "Mars", "Venus", "Jupiter"], a: "Mars" },
-  { q: "What is H2O?", o: ["Water", "Salt", "Oxygen", "Acid"], a: "Water" }
+let currentQuestion = 0;
+let score = 0;
+
+const dummyQuestions = [
+  {
+    question: "PDF parsing ho gaya. Pehla sawal: Capital of India?",
+    options: ["Mumbai", "Delhi", "Kolkata", "Chennai"],
+    answer: 1
+  },
+  {
+    question: "PDF parsing complete. Dusra sawal: 2 + 2 = ?",
+    options: ["3", "4", "5", "6"],
+    answer: 1
+  }
 ];
 
-let current = 0, score = 0;
-const quizBox = document.getElementById("quiz");
+function handlePDF() {
+  const file = document.getElementById('pdfInput').files[0];
+  if (!file) return alert("Please select a PDF file first.");
 
-function render() {
-  if (current >= quiz.length) {
-    quizBox.innerHTML = `<h2>Quiz Over</h2><p>Your score: ${score} / ${quiz.length}</p><p>🙏 Please give me another sheet.</p>`;
-    return;
-  }
+  document.getElementById('loading').style.display = 'block';
 
-  const q = quiz[current];
-  quizBox.innerHTML = `
-    <div class='question'>Q${current + 1}. ${q.q}</div>
-    ${q.o.map(opt => `<div class='option' onclick='check(this, "${opt}", "${q.a}")'>${opt}</div>`).join("")}
-    <div class='quit' onclick='quitQuiz()'>❌ Quit</div>
-  `;
+  // Simulating PDF processing
+  setTimeout(() => {
+    document.getElementById('uploadSection').style.display = 'none';
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('quizSection').style.display = 'block';
+    showQuestion();
+  }, 2000);
 }
 
-function check(elem, selected, correct) {
-  const options = document.querySelectorAll(".option");
-  options.forEach(opt => {
-    opt.onclick = null;
-    if (opt.innerText === correct) opt.classList.add("correct");
-    else if (opt.innerText === selected) opt.classList.add("wrong");
+function showQuestion() {
+  const q = dummyQuestions[currentQuestion];
+  document.getElementById('questionBox').innerText = q.question;
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(idx, btn);
+    optionsBox.appendChild(btn);
   });
-  if (selected === correct) score++;
-  setTimeout(() => { current++; render(); }, 1000);
+}
+
+function checkAnswer(selected, btn) {
+  const correct = dummyQuestions[currentQuestion].answer;
+  const buttons = document.querySelectorAll('#optionsBox button');
+
+  buttons.forEach(b => b.disabled = true);
+
+  if (selected === correct) {
+    btn.classList.add('correct');
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    buttons[correct].classList.add('correct');
+  }
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion < dummyQuestions.length) {
+    showQuestion();
+  } else {
+    document.getElementById('quizSection').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
+    document.getElementById('scoreBox').innerText = `You got ${score} out of ${dummyQuestions.length} correct.`;
+  }
 }
 
 function quitQuiz() {
-  quizBox.innerHTML = `<p>❌ You quit the quiz.</p>`;
+  location.reload();
 }
-
-render();
